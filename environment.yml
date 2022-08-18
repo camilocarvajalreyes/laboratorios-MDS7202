@@ -1,0 +1,11 @@
+name: mds7202
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - numpy=1.23.2
+  - pandas=1.4.3
+  - pip=22.2.2
+  - plotly=5.10.0
+  - scikit-learn=1.1.2
+prefix: /home/agonzalez/miniconda3/envs/mds7202
