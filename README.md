@@ -11,4 +11,4 @@ Entregables del ramo Laboratorio de Programación Científica para Ciencia de Da
 [Acceso al notebook](Lab_2/Lab_2.ipynb)
 
 ## Laboratorio 3: El Pandas no muerde (act. I) 🐼
-[Acceso al notebook](Lab_3/Lab_3.ipynb)
+[Acceso al notebook](Lab_3/Laboratorio3_enunciado.ipynb)
