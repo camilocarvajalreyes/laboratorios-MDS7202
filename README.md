@@ -15,3 +15,9 @@ Entregables del ramo Laboratorio de Programación Científica para Ciencia de Da
 
 ## Laboratorio 4: El Pandas no muerde (act. II) 🐼
 [Acceso al notebook](Lab_4/Lab_4.ipynb)
+
+## Laboratorio 5: El Pandas no Muerde (act IV) 🐼
+[Acceso al notebook](Lab_5/Lab_5.ipynb)
+
+## Laboratorio 6: La desperación de Mr. Lepin 🐼
+[Acceso al notebook](Lab_6/Lab_6.ipynb)
