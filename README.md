@@ -21,3 +21,9 @@ Entregables del ramo Laboratorio de Programación Científica para Ciencia de Da
 
 ## Laboratorio 6: La desperación de Mr. Lepin 🐼
 [Acceso al notebook](Lab_6/Lab_6.ipynb)
+
+## Laboratorio 7: Aprendizaje Supervisado 🔮
+[Acceso al notebook](Lab_7/Lab_7.ipynb)
+
+## Laboratorio 8: ¿Superhéroe o Villano? 🦸
+[Acceso al notebook](Lab_8/Lab_8.ipynb)
