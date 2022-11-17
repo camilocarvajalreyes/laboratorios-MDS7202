@@ -27,3 +27,6 @@ Entregables del ramo Laboratorio de Programación Científica para Ciencia de Da
 
 ## Laboratorio 8: ¿Superhéroe o Villano? 🦸
 [Acceso al notebook](Lab_8/Lab_8.ipynb)
+
+## Laboratorio 9: Los huesos de Hipócrates 🦴
+[Acceso al notebook](Lab_9/Lab_9.ipynb)
