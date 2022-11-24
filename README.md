@@ -30,3 +30,6 @@ Entregables del ramo Laboratorio de Programación Científica para Ciencia de Da
 
 ## Laboratorio 9: Los huesos de Hipócrates 🦴
 [Acceso al notebook](Lab_9/Lab_9.ipynb)
+
+## Proyecto: El Desafío de Don Rene
+[Acceso al notebook](Proyecto/Proyecto.ipynb)
