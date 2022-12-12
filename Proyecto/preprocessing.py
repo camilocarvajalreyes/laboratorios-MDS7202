@@ -5,6 +5,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import SelectPercentile, f_classif
 from sklearn.metrics import classification_report, r2_score, mean_squared_error
 import pandas as pd
+import re
 
 
 class CategoriesTokenizer:
@@ -34,8 +35,24 @@ boc_many_values = CountVectorizer(
 def custom_features(dataframe_in):
     df = dataframe_in.copy(deep=True)
 
-    df['month'] = pd.to_datetime(df['release_date']).dt.month
+    df['month2'] = pd.to_datetime(df['release_date']).dt.month
     df['release_date'] = pd.to_datetime(df['release_date']).apply(lambda x: x.to_julian_date())
+
+    df['revenue'] = pd.Series([0 for _ in range(len(dataframe_in))])
+
+    df.loc[df.publisher.str.match('.*microsoft.*', flags=re.IGNORECASE).values, 'revenue'] = 10.260
+    df.loc[df.publisher.str.match('.*netease.*', flags=re.IGNORECASE).values, 'revenue'] = 6.668
+    df.loc[df.publisher.str.match('.*activision.*', flags=re.IGNORECASE).values, 'revenue'] = 6.388
+    df.loc[df.publisher.str.match('.*electronic.*', flags=re.IGNORECASE).values, 'revenue'] = 5.537
+    df.loc[df.publisher.str.match('.*bandai.*', flags=re.IGNORECASE).values, 'revenue'] = 3.018
+    df.loc[df.publisher.str.match('.*square.*', flags=re.IGNORECASE).values, 'revenue'] = 2.386
+    df.loc[df.publisher.str.match('.*nexon.*', flags=re.IGNORECASE).values, 'revenue'] = 2.286
+    df.loc[df.publisher.str.match('.*ubisoft.*', flags=re.IGNORECASE).values, 'revenue'] = 1.446
+    df.loc[df.publisher.str.match('.*konami.*', flags=re.IGNORECASE).values, 'revenue'] = 1.303
+    df.loc[df.publisher.str.match('.*SEGA.*').values, 'revenue'] = 1.153
+    df.loc[df.publisher.str.match('.*capcom.*', flags=re.IGNORECASE).values, 'revenue'] = 0.7673
+    df.loc[df.publisher.str.match('.*warner.*', flags=re.IGNORECASE).values, 'revenue'] = 0.7324
+
     return df
 
 
@@ -52,7 +69,7 @@ preprocessisng = ColumnTransformer(
         ('OneHotEncoder',OneHotEncoder(handle_unknown='ignore'),['month']),
         # ('StandardScaler',StandardScaler(), ['...']),
         ('MinMaxScaler',MinMaxScaler(),['required_age','price','release_date']),
-        ('BoxCox',PowerTransformer(method='yeo-johnson'),['achievements','average_playtime']),
+        ('BoxCox',PowerTransformer(method='yeo-johnson'),['achievements','average_playtime','revenue']),
         # ('unchanged',None,['english'])  # chequear como no hacer nada
 ])
 
