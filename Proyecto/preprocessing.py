@@ -35,7 +35,7 @@ boc_many_values = CountVectorizer(
 def custom_features(dataframe_in):
     df = dataframe_in.copy(deep=True)
 
-    df['month2'] = pd.to_datetime(df['release_date']).dt.month
+    df['month'] = pd.to_datetime(df['release_date']).dt.month
     df['release_date'] = pd.to_datetime(df['release_date']).apply(lambda x: x.to_julian_date())
 
     df['revenue'] = pd.Series([0 for _ in range(len(dataframe_in))])
@@ -56,7 +56,7 @@ def custom_features(dataframe_in):
     return df
 
 
-preprocessisng = ColumnTransformer(
+preprocessing = ColumnTransformer(
     transformers=[
         ('BoC-plat',boc_some_values,'platforms'),
         ('BoC-cat',boc_some_values,'categories'),
@@ -84,7 +84,7 @@ def make_pipeline(clf,column_transformer,perc=95):
 
 
 def train_and_evaluate_clf(clf,X_train,y_train,X_eval,y_eval,perc=95):
-    pipe = make_pipeline(clf,preprocessisng,perc)
+    pipe = make_pipeline(clf,preprocessing,perc)
     print("Resultados clasificación {}".format(type(clf).__name__))
     pipe.fit(X_train, y_train)
     y_pred = pipe.predict(X_eval)
@@ -92,7 +92,7 @@ def train_and_evaluate_clf(clf,X_train,y_train,X_eval,y_eval,perc=95):
 
 
 def train_and_evaluate_reg(clf,X_train,y_train,X_eval,y_eval,perc=95):
-    pipe = make_pipeline(clf,preprocessisng,perc)
+    pipe = make_pipeline(clf,preprocessing,perc)
     print("Resultados regresión {}".format(type(clf).__name__))
     pipe.fit(X_train, y_train)
     y_pred = pipe.predict(X_eval)
