@@ -1,11 +1,19 @@
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import MinMaxScaler, PowerTransformer, OneHotEncoder
+from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import SelectPercentile, f_classif
 from sklearn.metrics import classification_report, r2_score, mean_squared_error
 import pandas as pd
 import re
+
+
+class Nothing(BaseEstimator, TransformerMixin):
+    def fit(self, X, y=None):
+        return self
+    def transform(self,X):
+        return X
 
 
 class CategoriesTokenizer:
@@ -67,10 +75,9 @@ preprocessing = ColumnTransformer(
         ('BoC-pub',boc_many_values,'publisher'),
 
         ('OneHotEncoder',OneHotEncoder(handle_unknown='ignore'),['month']),
-        # ('StandardScaler',StandardScaler(), ['...']),
         ('MinMaxScaler',MinMaxScaler(),['required_age','price','release_date']),
         ('BoxCox',PowerTransformer(method='yeo-johnson'),['achievements','average_playtime','revenue']),
-        # ('unchanged',None,['english'])  # chequear como no hacer nada
+        ('unchanged',Nothing(),['english'])
 ])
 
 
