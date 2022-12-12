@@ -3,7 +3,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import MinMaxScaler, PowerTransformer, OneHotEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import SelectPercentile, f_classif
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, r2_score, mean_squared_error
 import pandas as pd
 
 
@@ -66,12 +66,21 @@ def make_pipeline(clf,column_transformer,perc=95):
     return pipe
 
 
-def train_and_evaluate(clf,X_train,y_train,X_eval,y_eval,perc=95):
+def train_and_evaluate_clf(clf,X_train,y_train,X_eval,y_eval,perc=95):
     pipe = make_pipeline(clf,preprocessisng,perc)
     print("Resultados clasificación {}".format(type(clf).__name__))
     pipe.fit(X_train, y_train)
-    y_svm = pipe.predict(X_eval)
-    print(classification_report(y_eval,y_svm))
+    y_pred = pipe.predict(X_eval)
+    print(classification_report(y_eval,y_pred))
+
+
+def train_and_evaluate_reg(clf,X_train,y_train,X_eval,y_eval,perc=95):
+    pipe = make_pipeline(clf,preprocessisng,perc)
+    print("Resultados regresión {}".format(type(clf).__name__))
+    pipe.fit(X_train, y_train)
+    y_pred = pipe.predict(X_eval)
+    print("Error cuadrático medio = {}".format(mean_squared_error(y_eval,y_pred)))
+    print("Score R2 = {}".format(r2_score(y_eval,y_pred)))
 
 
 def custom_features(dataframe_in):
