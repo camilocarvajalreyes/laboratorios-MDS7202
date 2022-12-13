@@ -31,14 +31,18 @@ def df_numeric_histograms(df):
     fig = go.Figure()
 
     columns = df.select_dtypes(np.number).columns.to_list()
+    default_state = columns[0]
 
     for col in columns:
         fig.add_trace(
             go.Histogram(
                 x=df[col],
-                name=col
+                name=col,
+                visible=(col==default_state),
+                # title_text= f'Distribución de "{col}"'
                 )
         )
+    fig.update_layout(showlegend=True, title_text=f'Distribución de "{default_state}"') # title of plot
 
     fig_buttons = []
     visible = np.eye(len(columns)).astype(bool)
@@ -49,8 +53,8 @@ def df_numeric_histograms(df):
             method = 'update',
             args = [
                 {'visible': visible[idx]},
-                {'title': f'Distribución de "{col}"',
-                'showlegend': True,
+                # {'title': f'Distribución de "{col}"',
+                {'showlegend': True,
                 'legend':col}
                 ])
         fig_buttons.append(button_dict)
