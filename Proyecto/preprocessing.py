@@ -77,7 +77,7 @@ preprocessing = ColumnTransformer(
         ('OneHotEncoder',OneHotEncoder(handle_unknown='ignore'),['month']),
         ('MinMaxScaler',MinMaxScaler(),['required_age','price','release_date']),
         ('BoxCox',PowerTransformer(method='yeo-johnson'),['achievements','average_playtime','revenue']),
-        ('unchanged',Nothing(),['english'])
+        # ('unchanged',Nothing(),['english'])
 ])
 
 
