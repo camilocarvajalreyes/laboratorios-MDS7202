@@ -26,6 +26,67 @@ def plot_correlations(df, method_list):
     plt.tight_layout()
     return
 
+def boxplot_col_rating_english(df):
+    fig=go.Figure()
+
+    fig_buttons = []
+
+    cols = df.select_dtypes(include='number').columns.values
+    cols = cols[(cols != 'rating') & (cols != 'english')]
+    default_state = cols[0]
+    yes_no = ['Yes', 'No']
+
+    for idx, col in enumerate(cols):
+        for i, english in enumerate(df['english'].unique()):
+            df_plot=df.loc[df['english']==english].copy()
+
+
+            fig.add_trace(go.Box(x=df_plot["rating"], y=df_plot[col], visible=(col==default_state), name=yes_no[i]))
+            fig.update_xaxes(categoryorder='array', categoryarray= ['Negative', 'Mixed', 'Positive', 'Mostly Positive', 'Very Positive'])
+            fig.update_layout(legend_title_text='English')
+            # fig.for_each_trace(lambda t: t.update(name = {'0':'No', '1': 'Yes'}[t.name]))    
+
+        fig.update_layout(
+            boxmode='group',
+            title = f'Boxplot de "{default_state}" según rating y disponibilidad en inglés')
+
+        fig_buttons.append(dict(method='update',
+                                label=col,
+                                args = [{'visible': [col==r for r in cols for i in range(2)]},
+                                        {'title':f'Boxplot de "{col}" según rating y disponibilidad en inglés'}]))
+    fig.update_layout(
+        updatemenus=[
+            dict(
+                direction='down',
+                showactive=True,
+                # x=2,
+                # y=2,
+                buttons=list(fig_buttons)
+                ),
+            dict(
+                buttons=[
+                    dict(
+                        label="Linear",  
+                        method="relayout", 
+                        args=[{"yaxis.type": "linear"}]),
+                    dict(
+                        label="Log", 
+                        method="relayout", 
+                        args=[{"yaxis.type": "log"}]),
+                        ],
+                    type='buttons',
+                    direction='left',                
+                    x=-0.085,
+                    y=0.7
+                    )],
+        annotations=[
+            dict(text='y-scale', x=-0.18, xref='paper', y=0.8, yref='paper', align='left', showarrow=False)
+        ]
+        )
+                
+    fig.show()
+
+
 
 def df_numeric_histograms(df):    
     fig = go.Figure()
@@ -138,6 +199,7 @@ def n_best_rating(df, col, n_min_prod=5):
                 height=600,
                 color='Rating promedio',
                 range_color=(1,5),
+                title=f'Top "N° juegos" para "{col}"<br>ordenado por "rating"'
             )
 
 
@@ -163,7 +225,7 @@ def n_best_rating(df, col, n_min_prod=5):
             args=[{"x":[df[col]],
             "y": [df[cat]],
             "marker.color": [df['Rating promedio']]},
-            {'title':f'Top {cat} para "{col}<br>ordenado por rating"',
+            {'title':f'Top {cat} para "{col}"<br>ordenado por "rating"',
             'yaxis':{'title':cat}}
             ],
             )
