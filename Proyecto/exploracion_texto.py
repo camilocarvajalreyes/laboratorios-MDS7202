@@ -1,8 +1,14 @@
 """Some text basic exploration functions"""
-import pandas as pd
 from collections import Counter
-from nltk import ngrams
+
+import pandas as pd
+import numpy as np
+
 import matplotlib.pyplot as plt
+import plotly.express as px
+
+from nltk import ngrams
+from nltk.corpus import stopwords
 from wordcloud import WordCloud
 
 
@@ -44,16 +50,87 @@ def most_common(df:pd.DataFrame,column:str,n_grams:int=1,limit:int=10,ignore:lis
     
     return tokens
 
+def plot_token_frequency(data, n_grams_list, title):
+    serie_tokens = most_common(
+        data,
+        'short_description',
+        ignore=stopwords.words('english'),
+        n_grams=n_grams_list[0],
+        limit=100)
 
-def plot_token_frequency(tokens:pd.Series,title=None,fig_size=(5,4)):
-    """
-    Takes a Pandas Series of value counts (of tokens sorted by frequency) and plots it
-    """
-    title = 'Tokens' if title is None else title
-    tokens.plot.barh(figsize=fig_size,title=title)
+    fig = px.bar(
+                x=serie_tokens,
+                y=serie_tokens.index,
+                height=600,
+                # color='Rating promedio',
+                range_color=(1,5),
+                title=title + f' - {n_grams_list[0]} n gramas',
+                orientation='h'
+                )
 
+    fig_buttons = []
+    for idx, n_grams in enumerate(n_grams_list):
+        serie_tokens = most_common(data,'short_description',ignore=stopwords.words('english'), n_grams=n_grams, limit=100)
+        cat_dict = dict(
+            label=f"{n_grams}",
+            method="update",
+            args=[{"x":[serie_tokens],
+            "y": [serie_tokens.index]},
+            {'title':title + f' - {n_grams} n gramas',
+            'yaxis':{'title':'Tokens'},
+            'xaxis':{'title':'Frecuencia'}}
+            ],
+            ) 
+        fig_buttons.append(cat_dict)
 
-def wordcloud_from_column(df:pd.DataFrame,column:str,maxfont:int=40,ignore:list=[]):
+    fig.update_layout(
+        updatemenus=[
+            dict(
+                direction="down",
+                y=0.8,
+                x=-0.12,
+                showactive=True,
+                buttons=list(fig_buttons
+                ),
+            ),
+            dict(
+                direction='down',
+                type='buttons',
+                # x=-0.1,
+                y=0.4,
+                showactive=True,
+                buttons=list(
+                    [
+                        dict(
+                            label="Top 100",  
+                            method="relayout", 
+                            args=[{"yaxis.range": [0-0.5, 100-0.5]}]),
+                        dict(
+                            label="Top 50",  
+                            method="relayout", 
+                            args=[{"yaxis.range": [0-0.5, 50-0.5]}]),
+                        dict(
+                            label="Top 10",  
+                            method="relayout", 
+                            args=[{"yaxis.range": [0-0.5, 10-0.5]}]),
+                        dict(
+                            label="Top 5",  
+                            method="relayout", 
+                            args=[{"yaxis.range": [0-0.5, 5-0.5]}]),        
+                    ]
+                )
+            )
+        ],
+        annotations=[
+        dict(text='Top N: ', x=-0.155, xref='paper', y=0.44, yref='paper', align='left', showarrow=False),
+        dict(text='N gramas:', x=-0.155, xref='paper', y=0.85, yref='paper', align='left', showarrow=False)
+    ]
+    )
+
+    fig.show()
+    return
+
+def wordcloud_from_column(df:pd.DataFrame,column:str,maxfont:int=40,ignore:list=[], ax=None):
     """
     It generates a wordcloud visualisation from the dataframe column (values must be strings)
     source: https://amueller.github.io/word_cloud/auto_examples/simple.html
@@ -73,6 +150,8 @@ def wordcloud_from_column(df:pd.DataFrame,column:str,maxfont:int=40,ignore:list=
             list of words to ignore
     
     """
+    if ax is None:
+        ax = plt.gca()
     # to do example coloured by group: https://amueller.github.io/word_cloud/auto_examples/colored_by_group.html
 
     text = ' '.join(df[column]).lower()
@@ -81,11 +160,6 @@ def wordcloud_from_column(df:pd.DataFrame,column:str,maxfont:int=40,ignore:list=
         text = text.replace(' '+ word + ' ',' ')
     # tokens =  pd.Series(' '.join(df[column]).lower().split())
 
-    # Generate a word cloud image
-    wordcloud = WordCloud().generate(text)
-
     wordcloud = WordCloud(max_font_size=maxfont).generate(text)
-    plt.figure()
-    plt.imshow(wordcloud, interpolation="bilinear")
-    plt.axis("off")
-    plt.show()
+    ax.imshow(wordcloud, interpolation="bilinear")
+    ax.axis("off")

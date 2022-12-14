@@ -45,22 +45,17 @@ def custom_features(dataframe_in):
 
     df['month'] = pd.to_datetime(df['release_date']).dt.month
     df['release_date'] = pd.to_datetime(df['release_date']).apply(lambda x: x.to_julian_date())
+    df['revenue'] = 0
 
-    df['revenue'] = pd.Series([0 for _ in range(len(dataframe_in))])
+    top_pub_revenues = {'microsoft':10.260, 'netease':6.668, 'activision':6.388, 'electronic':5.537, 'bandai':3.018, 'square':2.386, 'nexon':2.286,
+                        'ubisoft':1.446, 'konami':1.303, 'SEGA':1.153, 'capcom':0.7673, 'warner':0.7324}
 
-    df.loc[df.publisher.str.match('.*microsoft.*', flags=re.IGNORECASE).values, 'revenue'] = 10.260
-    df.loc[df.publisher.str.match('.*netease.*', flags=re.IGNORECASE).values, 'revenue'] = 6.668
-    df.loc[df.publisher.str.match('.*activision.*', flags=re.IGNORECASE).values, 'revenue'] = 6.388
-    df.loc[df.publisher.str.match('.*electronic.*', flags=re.IGNORECASE).values, 'revenue'] = 5.537
-    df.loc[df.publisher.str.match('.*bandai.*', flags=re.IGNORECASE).values, 'revenue'] = 3.018
-    df.loc[df.publisher.str.match('.*square.*', flags=re.IGNORECASE).values, 'revenue'] = 2.386
-    df.loc[df.publisher.str.match('.*nexon.*', flags=re.IGNORECASE).values, 'revenue'] = 2.286
-    df.loc[df.publisher.str.match('.*ubisoft.*', flags=re.IGNORECASE).values, 'revenue'] = 1.446
-    df.loc[df.publisher.str.match('.*konami.*', flags=re.IGNORECASE).values, 'revenue'] = 1.303
-    df.loc[df.publisher.str.match('.*SEGA.*').values, 'revenue'] = 1.153
-    df.loc[df.publisher.str.match('.*capcom.*', flags=re.IGNORECASE).values, 'revenue'] = 0.7673
-    df.loc[df.publisher.str.match('.*warner.*', flags=re.IGNORECASE).values, 'revenue'] = 0.7324
-
+    for rev_tuples in top_pub_revenues.items():
+        pub, rev = rev_tuples
+        if pub == 'SEGA':
+            df.loc[df.publisher.str.match(f'.*{pub}.*').values, 'revenue'] = rev
+        else:
+            df.loc[df.publisher.str.match(f'.*{pub}.*', flags=re.IGNORECASE).values, 'revenue'] = rev    
     return df
 
 
