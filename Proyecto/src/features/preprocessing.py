@@ -75,6 +75,21 @@ preprocessing = ColumnTransformer(
         # ('unchanged',Nothing(),['english'])
 ])
 
+preprocessing_bert = ColumnTransformer(
+    transformers=[
+        ('BoC-plat',boc_some_values,'platforms'),
+        ('BoC-cat',boc_some_values,'categories'),
+        ('BoC-genres',boc_some_values,'genres'),
+        ('BoC-tags',boc_some_values,'tags'),
+
+        ('BoC-dev',boc_many_values,'developer'),
+        ('BoC-pub',boc_many_values,'publisher'),
+
+        ('OneHotEncoder',OneHotEncoder(handle_unknown='ignore'),['month']),
+        ('MinMaxScaler',MinMaxScaler(),['required_age','price','release_date']),
+        ('BoxCox',PowerTransformer(method='yeo-johnson'),['achievements','average_playtime','revenue']),
+        ('unchanged',Nothing(),['english','bert1','bert2','bert3','bert4','bert5'])
+])
 
 def make_pipeline(clf,column_transformer,perc=95):
     pipe = Pipeline([
